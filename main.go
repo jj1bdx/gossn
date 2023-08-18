@@ -26,18 +26,23 @@ type Kp struct {
 	Kp   float64 `json:"estimated_kp"`
 }
 
+type Eisn struct {
+	Time string
+	Eisn float64
+}
+
 func main() {
 
 	fluxData := getURLBody(urlSWPCFlux)
-	// kpData := getURLBody(urlSWPCKp)
-	// silsoData := getURLBody(urlSILSOEisn)
-
 	var fluxList []Flux
 	if err := json.Unmarshal(fluxData, &fluxList); err != nil {
 		log.Fatal(err)
 	}
 	fluxLatest := fluxList[0]
-	fmt.Printf("%s : %f\n", fluxLatest.Time, fluxLatest.Flux)
+	fmt.Printf("10.7cm Solar Flux Index (SFI): %s : %d\n",
+		fluxLatest.Time, int(fluxLatest.Flux))
+	fmt.Printf("Estimated SSN from SFI: %s : %d\n",
+		fluxLatest.Time, estimatedSSN(fluxLatest.Flux))
 
 	kpData := getURLBody(urlSWPCKp)
 
@@ -45,8 +50,8 @@ func main() {
 	if err := json.Unmarshal(kpData, &kpList); err != nil {
 		log.Fatal(err)
 	}
-	kpLatest := kpList[len(kpList) - 1]
-	fmt.Printf("%s : %f\n", kpLatest.Time, kpLatest.Kp)
+	kpLatest := kpList[len(kpList)-1]
+	fmt.Printf("Estimated Kp: %s : %g\n", kpLatest.Time, kpLatest.Kp)
 
 	silsoData := getURLBody(urlSILSOEisn)
 	eisnReader := csv.NewReader(strings.NewReader(string(silsoData[:])))
@@ -54,7 +59,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	eisnLatestRecord := eisnRecords[len(eisnRecords) - 1]
+	eisnLatestRecord := eisnRecords[len(eisnRecords)-1]
 	eisnYear := trimLeftSpace(eisnLatestRecord[0])
 	eisnMonth := trimLeftSpace(eisnLatestRecord[1])
 	eisnDay := trimLeftSpace(eisnLatestRecord[2])
@@ -62,7 +67,12 @@ func main() {
 	if eisnVal, err = strconv.Atoi(trimLeftSpace(eisnLatestRecord[4])); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("%s:%s:%sT00:00:00 : %d\n",
-		eisnYear, eisnMonth, eisnDay, eisnVal)
-	
+	var eisnLatest Eisn
+	eisnLatest.Time = fmt.Sprintf("%s-%s-%sT00:00:00",
+		eisnYear, eisnMonth, eisnDay)
+	eisnLatest.Eisn = float64(eisnVal)
+	fmt.Printf("EISN (observed SSN): %s : %d\n", eisnLatest.Time, int(eisnLatest.Eisn))
+
+	fmt.Println("SFI/Kp source: NOAA SWPC")
+	fmt.Println("EISN source: WDC-SILSO, Royal Observatory of Belgium, Brussels")
 }

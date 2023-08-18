@@ -71,4 +71,3 @@ func getURLBody(url string) []byte {
 func trimLeftSpace(s string) string {
 	return strings.TrimLeftFunc(s, unicode.IsSpace)
 }
-
