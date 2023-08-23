@@ -1,3 +1,10 @@
+# This file is modified from the Makefile of
+# bsky written in Go by Yasuhiro Matsumoto (a.k.a. mattn)
+# <https://github.com/mattn/bsky/>
+# Permission granted for reuse by the MIT License of bsky.
+# Kenji Rikitake distributes this file
+# under the MIT License of gossn.
+
 BIN := gossn
 VERSION := $$(make -s show-version)
 CURRENT_REVISION := $(shell git rev-parse --short HEAD)
