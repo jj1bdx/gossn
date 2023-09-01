@@ -64,7 +64,7 @@ func main() {
 	} else {
 		eisnLen := len(eisnRecords)
 		if eisnLen > 1 {
-			eisnLatestRecord := eisnRecords[len(eisnRecords)-1]
+			eisnLatestRecord := eisnRecords[eisnLen-1]
 			eisnYear := trimLeftSpace(eisnLatestRecord[0])
 			eisnMonth := trimLeftSpace(eisnLatestRecord[1])
 			eisnDay := trimLeftSpace(eisnLatestRecord[2])
