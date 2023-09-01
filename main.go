@@ -63,7 +63,7 @@ func main() {
 		log.Print(err)
 	} else {
 		eisnLen := len(eisnRecords)
-		if eisnLen > 1 {
+		if eisnLen > 0 {
 			eisnLatestRecord := eisnRecords[eisnLen-1]
 			eisnYear := trimLeftSpace(eisnLatestRecord[0])
 			eisnMonth := trimLeftSpace(eisnLatestRecord[1])
