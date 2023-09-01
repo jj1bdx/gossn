@@ -36,42 +36,51 @@ func main() {
 	fluxData := getURLBody(urlSWPCFlux)
 	var fluxList []Flux
 	if err := json.Unmarshal(fluxData, &fluxList); err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		fmt.Printf("Unable to obtain SFI\n")
+	} else {
+		fluxLatest := fluxList[0]
+		fmt.Printf("10.7cm Solar Flux Index (SFI): %s : %d\n",
+			fluxLatest.Time, int(fluxLatest.Flux))
+		fmt.Printf("Estimated SSN from SFI: %s : %d\n",
+			fluxLatest.Time, estimatedSSN(fluxLatest.Flux))
 	}
-	fluxLatest := fluxList[0]
-	fmt.Printf("10.7cm Solar Flux Index (SFI): %s : %d\n",
-		fluxLatest.Time, int(fluxLatest.Flux))
-	fmt.Printf("Estimated SSN from SFI: %s : %d\n",
-		fluxLatest.Time, estimatedSSN(fluxLatest.Flux))
 
 	kpData := getURLBody(urlSWPCKp)
-
 	var kpList []Kp
 	if err := json.Unmarshal(kpData, &kpList); err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		fmt.Printf("Unable to obtain Kp\n")
+	} else {
+		kpLatest := kpList[len(kpList)-1]
+		fmt.Printf("Estimated Kp: %s : %g\n", kpLatest.Time, kpLatest.Kp)
 	}
-	kpLatest := kpList[len(kpList)-1]
-	fmt.Printf("Estimated Kp: %s : %g\n", kpLatest.Time, kpLatest.Kp)
 
 	silsoData := getURLBody(urlSILSOEisn)
 	eisnReader := csv.NewReader(strings.NewReader(string(silsoData[:])))
 	eisnRecords, err := eisnReader.ReadAll()
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+	} else {
+		eisnLen := len(eisnRecords)
+		if eisnLen > 1 {
+			eisnLatestRecord := eisnRecords[len(eisnRecords)-1]
+			eisnYear := trimLeftSpace(eisnLatestRecord[0])
+			eisnMonth := trimLeftSpace(eisnLatestRecord[1])
+			eisnDay := trimLeftSpace(eisnLatestRecord[2])
+			var eisnVal int
+			if eisnVal, err = strconv.Atoi(trimLeftSpace(eisnLatestRecord[4])); err != nil {
+				log.Fatal(err)
+			}
+			var eisnLatest Eisn
+			eisnLatest.Time = fmt.Sprintf("%s-%s-%sT00:00:00",
+				eisnYear, eisnMonth, eisnDay)
+			eisnLatest.Eisn = float64(eisnVal)
+			fmt.Printf("EISN (observed SSN): %s : %d\n", eisnLatest.Time, int(eisnLatest.Eisn))
+		} else {
+			fmt.Printf("Unable to obtain EISN\n")
+		}
 	}
-	eisnLatestRecord := eisnRecords[len(eisnRecords)-1]
-	eisnYear := trimLeftSpace(eisnLatestRecord[0])
-	eisnMonth := trimLeftSpace(eisnLatestRecord[1])
-	eisnDay := trimLeftSpace(eisnLatestRecord[2])
-	var eisnVal int
-	if eisnVal, err = strconv.Atoi(trimLeftSpace(eisnLatestRecord[4])); err != nil {
-		log.Fatal(err)
-	}
-	var eisnLatest Eisn
-	eisnLatest.Time = fmt.Sprintf("%s-%s-%sT00:00:00",
-		eisnYear, eisnMonth, eisnDay)
-	eisnLatest.Eisn = float64(eisnVal)
-	fmt.Printf("EISN (observed SSN): %s : %d\n", eisnLatest.Time, int(eisnLatest.Eisn))
 
 	fmt.Println("SFI/Kp source: NOAA SWPC")
 	fmt.Println("EISN source: WDC-SILSO, Royal Observatory of Belgium, Brussels")
