@@ -14,7 +14,7 @@ import (
 
 var urlSWPCFlux string = "https://services.swpc.noaa.gov/json/f107_cm_flux.json"
 var urlSWPCKp string = "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json"
-var urlSILSOEisn string = "https://sidc.be/SILSO/DATA/EISN/EISN_current.csv"
+var urlSILSOEisn string = "https://www.sidc.be/SILSO/DATA/EISN/EISN_current.csv"
 
 type Flux struct {
 	Time string  `json:"time_tag"`
