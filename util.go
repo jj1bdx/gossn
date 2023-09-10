@@ -44,8 +44,8 @@ func estimatedSSN(sfi float64) uint16 {
 
 func getURLBody(url string) []byte {
 	client := http.Client{
-		// Set timeout to 5 seconds
-		Timeout: time.Second * 5,
+		// Set timeout to 10 seconds
+		Timeout: time.Second * 10,
 	}
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
