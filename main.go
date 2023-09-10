@@ -37,7 +37,7 @@ func main() {
 	var fluxList []Flux
 	if err := json.Unmarshal(fluxData, &fluxList); err != nil {
 		log.Print(err)
-		fmt.Printf("Unable to obtain SFI\n")
+		fmt.Printf("Unable to fetch SFI\n")
 	} else {
 		fluxLatest := fluxList[0]
 		fmt.Printf("10.7cm Solar Flux Index (SFI): %s : %d\n",
@@ -50,7 +50,7 @@ func main() {
 	var kpList []Kp
 	if err := json.Unmarshal(kpData, &kpList); err != nil {
 		log.Print(err)
-		fmt.Printf("Unable to obtain Kp\n")
+		fmt.Printf("Unable to fetch Kp\n")
 	} else {
 		kpLatest := kpList[len(kpList)-1]
 		fmt.Printf("Estimated Kp: %s : %g\n", kpLatest.Time, kpLatest.Kp)
@@ -61,6 +61,7 @@ func main() {
 	eisnRecords, err := eisnReader.ReadAll()
 	if err != nil {
 		log.Print(err)
+		fmt.Printf("Unable to fetch EISN\n")
 	} else {
 		eisnLen := len(eisnRecords)
 		if eisnLen > 0 {
@@ -78,7 +79,7 @@ func main() {
 			eisnLatest.Eisn = float64(eisnVal)
 			fmt.Printf("EISN (observed SSN): %s : %d\n", eisnLatest.Time, int(eisnLatest.Eisn))
 		} else {
-			fmt.Printf("Unable to obtain EISN\n")
+			fmt.Printf("Unable to parse EISN\n")
 		}
 	}
 
