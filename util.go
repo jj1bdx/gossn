@@ -49,19 +49,23 @@ func getURLBody(url string) []byte {
 	}
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return nil
 	}
 	request.Header.Set("User-Agent", "gossn")
+	request.Close = true
 	response, err := client.Do(request)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return nil
 	}
 	if response.Body != nil {
 		defer response.Body.Close()
 	}
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
+		return nil
 	}
 	return body
 }

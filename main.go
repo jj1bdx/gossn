@@ -71,15 +71,17 @@ func main() {
 			eisnDay := trimLeftSpace(eisnLatestRecord[2])
 			var eisnVal int
 			if eisnVal, err = strconv.Atoi(trimLeftSpace(eisnLatestRecord[4])); err != nil {
-				log.Fatal(err)
+				log.Print(err)
+				fmt.Printf("Unable to parse EISN value integer\n")
+			} else {
+				var eisnLatest Eisn
+				eisnLatest.Time = fmt.Sprintf("%s-%s-%sT00:00:00",
+					eisnYear, eisnMonth, eisnDay)
+				eisnLatest.Eisn = float64(eisnVal)
+				fmt.Printf("EISN (observed SSN): %s : %d\n", eisnLatest.Time, int(eisnLatest.Eisn))
 			}
-			var eisnLatest Eisn
-			eisnLatest.Time = fmt.Sprintf("%s-%s-%sT00:00:00",
-				eisnYear, eisnMonth, eisnDay)
-			eisnLatest.Eisn = float64(eisnVal)
-			fmt.Printf("EISN (observed SSN): %s : %d\n", eisnLatest.Time, int(eisnLatest.Eisn))
 		} else {
-			fmt.Printf("Unable to parse EISN\n")
+			fmt.Printf("Unable to parse EISN record\n")
 		}
 	}
 
