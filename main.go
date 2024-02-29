@@ -40,9 +40,9 @@ func main() {
 		fmt.Printf("Unable to fetch SFI\n")
 	} else {
 		fluxLatest := fluxList[0]
-		fmt.Printf("10.7cm Solar Flux Index (SFI): %s : %d\n",
+		fmt.Printf("10.7cm #Solar Flux Index (SFI): %s : %d\n",
 			fluxLatest.Time, int(fluxLatest.Flux))
-		fmt.Printf("Estimated SSN from SFI: %s : %d\n",
+		fmt.Printf("Estimated #SSN from #SFI: %s : %d\n",
 			fluxLatest.Time, estimatedSSN(fluxLatest.Flux))
 	}
 
